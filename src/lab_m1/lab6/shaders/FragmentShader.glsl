@@ -5,6 +5,9 @@
 
 // Output
 layout(location = 0) out vec4 out_color; // scriere in framebuffer default, locatia 0 si un singur buffer si variab declarata de tipul out
+// scriu in img afisata in pixeli cul fragmentului respectiv
+
+// var de intrare, prim ca iesire din vertex shader
 in vec3 frag_color;
 
 void main()

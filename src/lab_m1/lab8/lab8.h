@@ -37,6 +37,8 @@ namespace m1
         float materialKs;
 
         // TODO(student): If you need any other class variables, define them here.
-
+        int is_spot = 0;
+	    float angle;
+       glm::vec3 lightPosition1 = glm::vec3(0, 4, 0), lightDirection1 = glm::vec3(0, -1, 0);
     };
 }   // namespace m1

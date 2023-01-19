@@ -245,11 +245,10 @@ void Lab5::OnInputUpdate(float deltaTime, int mods)
     // FOV normal
     if (window->KeyHold(GLFW_KEY_P))
     {
-        projectionMatrix = glm::perspective(90.f, 2.f, 2.f, 200.0f);
+        projectionMatrix = glm::perspective(90.f, 2.f, 3.f, 200.0f);
         isOrtho = false;
     }
 }
-
 
 void Lab5::OnKeyPress(int key, int mods)
 {
@@ -311,11 +310,9 @@ void Lab5::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)
     // Add mouse button release event
 }
 
-
 void Lab5::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY)
 {
 }
-
 
 void Lab5::OnWindowResize(int width, int height)
 {

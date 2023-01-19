@@ -82,7 +82,7 @@ void Lab8::Update(float deltaTimeSeconds)
         glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 1, 0));
         // TODO(student): Add or change the object colors
-        RenderSimpleMesh(meshes["sphere"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["sphere"], shaders["LabShader"], modelMatrix, glm::vec3(0, 0, 1));
 
     }
 
@@ -92,7 +92,7 @@ void Lab8::Update(float deltaTimeSeconds)
         modelMatrix = glm::rotate(modelMatrix, RADIANS(60.0f), glm::vec3(1, 0, 0));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
         // TODO(student): Add or change the object colors
-        RenderSimpleMesh(meshes["box"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["box"], shaders["LabShader"], modelMatrix, glm::vec3(0.25, 0.75, 0.75));
 
     }
 
@@ -109,7 +109,7 @@ void Lab8::Update(float deltaTimeSeconds)
         modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.01f, 0));
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.25f));
         // TODO(student): Add or change the object colors
-        RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix);
+        RenderSimpleMesh(meshes["plane"], shaders["LabShader"], modelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
 
     }
 
@@ -117,6 +117,12 @@ void Lab8::Update(float deltaTimeSeconds)
     {
         glm::mat4 modelMatrix = glm::mat4(1);
         modelMatrix = glm::translate(modelMatrix, lightPosition);
+        modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
+        RenderMesh(meshes["sphere"], shaders["Simple"], modelMatrix);
+    }
+    {
+        glm::mat4 modelMatrix = glm::mat4(1);
+        modelMatrix = glm::translate(modelMatrix, lightPosition1);
         modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
         RenderMesh(meshes["sphere"], shaders["Simple"], modelMatrix);
     }
@@ -163,6 +169,11 @@ void Lab8::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelM
     glUniform3f(object_color, color.r, color.g, color.b);
 
     // TODO(student): Set any other shader uniforms that you need
+    int is_spot_location = glGetUniformLocation(shader->program, "is_spot");
+    glUniform1i(is_spot_location, is_spot);
+
+    int angle_location = glGetUniformLocation(shader->program, "angle");
+    glUniform1f(angle_location, angle);
 
     // Bind model matrix
     GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");
@@ -177,6 +188,18 @@ void Lab8::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelM
     glm::mat4 projectionMatrix = GetSceneCamera()->GetProjectionMatrix();
     int loc_projection_matrix = glGetUniformLocation(shader->program, "Projection");
     glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+
+    int position1 = glGetUniformLocation(shader->program, "light_position1");
+    glUniform3f(position1, lightPosition1.x, lightPosition1.y, lightPosition1.z);
+
+    int direction1 = glGetUniformLocation(shader->program, "light_direction1");
+    glUniform3f(direction1, lightDirection1.x, lightDirection1.y, lightDirection1.z);
+
+    int position2 = glGetUniformLocation(shader->program, "light_position1");
+    glUniform3f(position2, lightPosition1.x, lightPosition1.y, lightPosition1.z);
+
+    int direction2 = glGetUniformLocation(shader->program, "light_direction1");
+    glUniform3f(direction2, lightDirection1.x, lightDirection1.y, lightDirection1.z);
 
     // Draw the object
     glBindVertexArray(mesh->GetBuffers()->m_VAO);
@@ -210,7 +233,29 @@ void Lab8::OnInputUpdate(float deltaTime, int mods)
         if (window->KeyHold(GLFW_KEY_Q)) lightPosition -= up * deltaTime * speed;
 
         // TODO(student): Set any other keys that you might need
+    if (window->KeyHold(GLFW_KEY_O)) {
+		angle += 3 * RADIANS(5) * deltaTime;
+	}
 
+	if (window->KeyHold(GLFW_KEY_P)) {
+		angle -= 3 * RADIANS(10) * deltaTime;
+	}
+
+
+	if (window->KeyHold(GLFW_KEY_UP)) {
+		lightDirection -= forward * deltaTime * speed;
+	}
+	if (window->KeyHold(GLFW_KEY_RIGHT)) {
+		lightDirection += right * deltaTime * speed;
+	}
+	if (window->KeyHold(GLFW_KEY_DOWN)) {
+		lightDirection += forward * deltaTime * speed;
+	}
+	if (window->KeyHold(GLFW_KEY_LEFT)) {
+		lightDirection -= right * deltaTime * speed;
+	}
+
+	lightDirection /= sqrt(lightDirection.x * lightDirection.x + lightDirection.y * lightDirection.y + lightDirection.z * lightDirection.z);
     }
 }
 
@@ -218,7 +263,9 @@ void Lab8::OnInputUpdate(float deltaTime, int mods)
 void Lab8::OnKeyPress(int key, int mods)
 {
     // Add key press event
-
+    if (key == GLFW_KEY_F) {
+        is_spot = (is_spot + 1) % 2;
+    }
     // TODO(student): Set keys that you might need
 
 }

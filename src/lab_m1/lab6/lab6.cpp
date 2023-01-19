@@ -110,8 +110,10 @@ Mesh* Lab6::CreateMesh(const char *name, const std::vector<VertexFormat> &vertic
     // Finally, what happens if you do the same thing in both places? Why?
 
     // Set vertex position attribute
+    // legare atribut din openGL de un nume de atrib in shader
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexFormat), 0);
+    // pe pipe-ul 0 se trimit la shader 3 float-uri (argument 3) pe care nu le normalizam (argument 4)
 
     // Set vertex normal attribute
     glEnableVertexAttribArray(1);
@@ -193,12 +195,14 @@ void Lab6::RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 & modelM
 
     // Render an object using the specified shader and the specified position
     glUseProgram(shader->program);
+    // Ca sa putem trimite date la o variabila din shader trebuie sa obtinem locatia variabilei in programul shader cu functia glGetUniformLocation:
+    // int location = glGetUniformLocation(int shader_program, "uniform_variable_name_in_shader");
 
     // TODO(student): Get shader location for uniform mat4 "Model"
     int location = glGetUniformLocation(shader->program, "Model"); // imi ia locatia / cauta variab model in shader
 
     // TODO(student): Set shader uniform "Model" to modelMatrix
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMatrix)); // trimite datele lui modelmatrix lui model
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMatrix)); // trimite datele lui modelmatrix lui model  din shader
 
     // TODO(student): Get shader location for uniform mat4 "View"
     int location2 = glGetUniformLocation(shader->program, "View");

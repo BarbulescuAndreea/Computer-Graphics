@@ -5,11 +5,13 @@
 
 // Output
 layout(location = 0) out vec4 out_color;
-
+in vec3 color;
 
 void main()
 {
     // TODO(student): Write pixel out color
-    out_color = vec4(1);
+   // out_color = vec4(1); 
+   // aplic culoarea din vertex shader
+    out_color = vec4(color, 1); 
 
 }
